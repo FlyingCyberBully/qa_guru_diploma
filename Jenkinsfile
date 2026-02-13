@@ -19,8 +19,6 @@ pipeline {
         BROWSERSTACK_USERNAME   = credentials('BROWSERSTACK_USERNAME')
         BROWSERSTACK_ACCESS_KEY = credentials('BROWSERSTACK_ACCESS_KEY')
         BROWSERSTACK_APP_URL    = credentials('BROWSERSTACK_APP_URL')
-        TELEGRAM_BOT_TOKEN   = credentials('TELEGRAM_BOT_TOKEN')
-        TELEGRAM_CHAT_ID     = credentials('TELEGRAM_CHAT_ID')
     }
 
     stages {
@@ -62,8 +60,14 @@ pipeline {
             allure includeProperties: false, results: [[path: "${ALLURE_RESULTS}"]]
 
             sh '''
-                java "-DconfigFile=notifications/telegram.json" \
-                     -jar /opt/allure-notifications/allure-notifications.jar \
+                test -f ../allure-notifications-4.11.0.jar || \
+                    curl -sL https://github.com/qa-guru/allure-notifications/releases/download/4.6.1/allure-notifications-4.11.0.jar \
+                         -o ../allure-notifications-4.11.0.jar
+            '''
+
+            sh '''
+                java "-DconfigFile=notifications/config.json" \
+                     -jar ../allure-notifications-4.11.0.jar \
                      || true
             '''
 
