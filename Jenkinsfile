@@ -35,19 +35,14 @@ ENVEOF
             steps {
                 sh '''
                     if ! command -v python3 > /dev/null 2>&1; then
-                        echo "Python3 not found, installing..."
                         apt-get update -qq > /dev/null 2>&1
                         apt-get install -y -qq python3 python3-pip python3-venv > /dev/null 2>&1
                     fi
-                    python3 --version
-                    python3 -m pip install --upgrade pip > /dev/null 2>&1 || true
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install --upgrade pip > /dev/null 2>&1
+                    pip install -r requirements.txt
                 '''
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh 'python3 -m pip install -r requirements.txt'
             }
         }
 
@@ -59,10 +54,11 @@ ENVEOF
                         marker = "-m ${params.TEST_SUITE}"
                     }
                     sh """
+                        . venv/bin/activate
                         REMOTE_URL=${params.REMOTE_URL} \
                         BROWSER_NAME=${params.BROWSER} \
                         BROWSER_VERSION=${params.BROWSER_VERSION} \
-                        python3 -m pytest tests/ ${marker} \
+                        python -m pytest tests/ ${marker} \
                             --alluredir=allure-results \
                             -v \
                             || true
