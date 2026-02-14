@@ -5,26 +5,29 @@ pipeline {
         choice(name: 'TEST_SUITE', choices: ['all', 'api', 'ui', 'mobile'], description: 'Test suite to run')
         string(name: 'BROWSER', defaultValue: 'chrome', description: 'Browser for UI tests')
         string(name: 'BROWSER_VERSION', defaultValue: '131.0', description: 'Browser version')
-        string(name: 'REMOTE_URL', defaultValue: '', description: 'Selenoid hub URL (leave empty for local)')
+        string(name: 'REMOTE_URL', defaultValue: 'https://selenoid.autotests.cloud/wd/hub', description: 'Selenoid hub URL')
         string(name: 'COMMENT', defaultValue: '', description: 'Comment for Allure notification')
-    }
-
-    environment {
-        ALLURE_RESULTS = 'allure-results'
-
-        // Credentials from Jenkins secret store
-        API_TOKEN            = credentials('API_TOKEN')
-        SELENOID_LOGIN       = credentials('SELENOID_LOGIN')
-        SELENOID_PASSWORD    = credentials('SELENOID_PASSWORD')
-        BROWSERSTACK_USERNAME   = credentials('BROWSERSTACK_USERNAME')
-        BROWSERSTACK_ACCESS_KEY = credentials('BROWSERSTACK_ACCESS_KEY')
-        BROWSERSTACK_APP_URL    = credentials('BROWSERSTACK_APP_URL')
     }
 
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('Create .env') {
+            steps {
+                sh '''
+                    cat > .env << 'ENVEOF'
+API_TOKEN=***TMDB_API_TOKEN***
+SELENOID_LOGIN=user1
+SELENOID_PASSWORD=1234
+BROWSERSTACK_USERNAME=***BSTACK_USERNAME***
+BROWSERSTACK_ACCESS_KEY=***BSTACK_ACCESS_KEY***
+BROWSERSTACK_APP_URL=***BSTACK_APP_URL***
+ENVEOF
+                '''
             }
         }
 
@@ -46,7 +49,7 @@ pipeline {
                         BROWSER_NAME=${params.BROWSER} \
                         BROWSER_VERSION=${params.BROWSER_VERSION} \
                         python3 -m pytest tests/ ${marker} \
-                            --alluredir=${ALLURE_RESULTS} \
+                            --alluredir=allure-results \
                             -v \
                             || true
                     """
@@ -57,7 +60,7 @@ pipeline {
 
     post {
         always {
-            allure includeProperties: false, results: [[path: "${ALLURE_RESULTS}"]]
+            allure includeProperties: false, results: [[path: 'allure-results']]
 
             sh '''
                 test -f ../allure-notifications-4.11.0.jar || \
