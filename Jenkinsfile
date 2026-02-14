@@ -31,6 +31,20 @@ ENVEOF
             }
         }
 
+        stage('Setup Python') {
+            steps {
+                sh '''
+                    if ! command -v python3 > /dev/null 2>&1; then
+                        echo "Python3 not found, installing..."
+                        apt-get update -qq > /dev/null 2>&1
+                        apt-get install -y -qq python3 python3-pip python3-venv > /dev/null 2>&1
+                    fi
+                    python3 --version
+                    python3 -m pip install --upgrade pip > /dev/null 2>&1 || true
+                '''
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 sh 'python3 -m pip install -r requirements.txt'
@@ -66,9 +80,6 @@ ENVEOF
                 test -f ../allure-notifications-4.11.0.jar || \
                     curl -sL https://github.com/qa-guru/allure-notifications/releases/download/4.6.1/allure-notifications-4.11.0.jar \
                          -o ../allure-notifications-4.11.0.jar
-            '''
-
-            sh '''
                 java "-DconfigFile=notifications/config.json" \
                      -jar ../allure-notifications-4.11.0.jar \
                      || true
