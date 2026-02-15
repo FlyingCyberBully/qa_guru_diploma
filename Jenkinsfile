@@ -44,7 +44,7 @@ ENVEOF
     "project": "TMDB Diploma Project",
     "environment": "qa.guru",
     "comment": "API, UI & Mobile tests",
-    "reportLink": "",
+    "reportLink": "${BUILD_URL}allure/",
     "language": "ru",
     "allureFolder": "allure-report/",
     "enableChart": true
