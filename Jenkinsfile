@@ -19,14 +19,14 @@ pipeline {
         stage('Create .env') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'TMDB_API_TOKEN', variable: 'API_TOKEN'),
+                    string(credentialsId: 'API_TOKEN', variable: 'API_TOKEN'),
                     string(credentialsId: 'SELENOID_LOGIN', variable: 'SELENOID_LOGIN'),
                     string(credentialsId: 'SELENOID_PASSWORD', variable: 'SELENOID_PASSWORD'),
-                    string(credentialsId: 'BSTACK_USERNAME', variable: 'BSTACK_USER'),
-                    string(credentialsId: 'BSTACK_ACCESS_KEY', variable: 'BSTACK_KEY'),
-                    string(credentialsId: 'BSTACK_APP_URL', variable: 'BSTACK_APP'),
-                    string(credentialsId: 'TELEGRAM_BOT_TOKEN', variable: 'TG_TOKEN'),
-                    string(credentialsId: 'TELEGRAM_CHAT_ID', variable: 'TG_CHAT')
+                    string(credentialsId: 'BROWSERSTACK_USERNAME', variable: 'BSTACK_USER'),
+                    string(credentialsId: 'BROWSERSTACK_ACCESS_KEY', variable: 'BSTACK_KEY'),
+                    string(credentialsId: 'BROWSERSTACK_APP_URL', variable: 'BSTACK_APP'),
+                    string(credentialsId: 'TG_BOT_TOKEN', variable: 'TG_TOKEN'),
+                    string(credentialsId: 'TG_CHAT_ID', variable: 'TG_CHAT')
                 ]) {
                     sh '''
                         cat > .env << ENVEOF
