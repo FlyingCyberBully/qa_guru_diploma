@@ -9,8 +9,8 @@
     "enableChart": true
   },
   "telegram": {
-    "token": "***TELEGRAM_TOKEN***",
-    "chat": "534607580",
+    "token": "${TELEGRAM_BOT_TOKEN}",
+    "chat": "${TELEGRAM_CHAT_ID}",
     "replyTo": ""
   }
 }

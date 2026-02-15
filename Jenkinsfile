@@ -18,16 +18,46 @@ pipeline {
 
         stage('Create .env') {
             steps {
-                sh '''
-                    cat > .env << 'ENVEOF'
-API_TOKEN=***TMDB_API_TOKEN***
-SELENOID_LOGIN=user1
-SELENOID_PASSWORD=1234
-BROWSERSTACK_USERNAME=***BSTACK_USERNAME***
-BROWSERSTACK_ACCESS_KEY=***BSTACK_ACCESS_KEY***
-BROWSERSTACK_APP_URL=***BSTACK_APP_URL***
+                withCredentials([
+                    string(credentialsId: 'TMDB_API_TOKEN', variable: 'API_TOKEN'),
+                    string(credentialsId: 'SELENOID_LOGIN', variable: 'SELENOID_LOGIN'),
+                    string(credentialsId: 'SELENOID_PASSWORD', variable: 'SELENOID_PASSWORD'),
+                    string(credentialsId: 'BSTACK_USERNAME', variable: 'BSTACK_USER'),
+                    string(credentialsId: 'BSTACK_ACCESS_KEY', variable: 'BSTACK_KEY'),
+                    string(credentialsId: 'BSTACK_APP_URL', variable: 'BSTACK_APP'),
+                    string(credentialsId: 'TELEGRAM_BOT_TOKEN', variable: 'TG_TOKEN'),
+                    string(credentialsId: 'TELEGRAM_CHAT_ID', variable: 'TG_CHAT')
+                ]) {
+                    sh '''
+                        cat > .env << ENVEOF
+API_TOKEN=${API_TOKEN}
+SELENOID_LOGIN=${SELENOID_LOGIN}
+SELENOID_PASSWORD=${SELENOID_PASSWORD}
+BROWSERSTACK_USERNAME=${BSTACK_USER}
+BROWSERSTACK_ACCESS_KEY=${BSTACK_KEY}
+BROWSERSTACK_APP_URL=${BSTACK_APP}
 ENVEOF
-                '''
+
+                        cat > notifications/config.json << CFGEOF
+{
+  "base": {
+    "project": "TMDB Diploma Project",
+    "environment": "qa.guru",
+    "comment": "API, UI & Mobile tests",
+    "reportLink": "",
+    "language": "ru",
+    "allureFolder": "allure-report/",
+    "enableChart": true
+  },
+  "telegram": {
+    "token": "${TG_TOKEN}",
+    "chat": "${TG_CHAT}",
+    "replyTo": ""
+  }
+}
+CFGEOF
+                    '''
+                }
             }
         }
 
