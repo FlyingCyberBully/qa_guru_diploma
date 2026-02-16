@@ -23,7 +23,6 @@
 - [Запуск тестов](#запуск-тестов)
 - [Jenkins](#jenkins)
 - [Allure Report](#allure-report)
-- [Allure TestOps](#allure-testops)
 - [Telegram уведомления](#telegram-уведомления)
 
 ---
@@ -54,7 +53,6 @@
 | Pydantic | Валидация данных и моделей |
 | Requests | HTTP-клиент для API |
 | Allure Report | Отчётность |
-| Allure TestOps | Управление тестами |
 | Selenoid | Удалённый запуск браузеров |
 | BrowserStack | Облачные мобильные устройства |
 | Jenkins | CI/CD |
@@ -99,13 +97,13 @@ qa_guru_diploma/
 │   └── notifier.py                 # Telegram-уведомления
 │
 └── tests/
-    ├── api/                        # API тесты (17 тестов)
+    ├── api/                        # API тесты (21 тест)
     │   ├── test_trending.py
     │   ├── test_search_api.py
     │   ├── test_movie_details.py
     │   ├── test_authentication.py
     │   └── test_rating.py
-    ├── ui/                         # UI тесты (12 тестов)
+    ├── ui/                         # UI тесты (14 тестов)
     │   ├── test_main_page.py
     │   ├── test_search.py
     │   ├── test_movie_page.py
@@ -203,19 +201,19 @@ allure serve allure-results
 
 ## Jenkins
 
-> Ссылка на Job: `<jenkins-url>` *(будет добавлена после настройки)*
+> Ссылка на Job: [qa_guru_diploma_test](https://jenkins.autotests.cloud/job/qa_guru_diploma_test/)
 
-Параметризованный запуск с выбором тестового набора:
-
-<!-- ![Jenkins](resources/media/jenkins.png) -->
+Параметризованный запуск с выбором тестового набора (`all`, `api`, `ui`, `mobile`), браузера и версии.
 
 ---
 
 ## Allure Report
 
-Примеры отчётов с шагами, вложениями и группировкой тестов:
+Пример отчёта — **40 тестов, 100% успешных**:
 
-<!-- ![Allure](resources/media/allure_report.png) -->
+<p align="center">
+  <img src="Allure.png" alt="Allure Report">
+</p>
 
 Каждый тест содержит:
 - Шаги выполнения (`@allure.step`)
@@ -226,19 +224,10 @@ allure serve allure-results
 
 ---
 
-## Allure TestOps
-
-> Ссылка на проект: *(будет добавлена после интеграции)*
-
-В Allure TestOps добавлены ручные тест-кейсы для проверки функционала,
-не покрытого автоматизацией.
-
-<!-- ![TestOps](resources/media/allure_testops.png) -->
-
----
-
 ## Telegram уведомления
 
-По завершении тестового прогона отправляется уведомление в Telegram:
+По завершении тестового прогона отправляется уведомление в Telegram со статистикой и ссылкой на Allure-отчёт:
 
-<!-- ![Telegram](resources/media/telegram.png) -->
+<p align="center">
+  <img src="telegram.png" alt="Telegram notification" width="400">
+</p>
